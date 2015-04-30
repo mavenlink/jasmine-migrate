@@ -19,7 +19,7 @@ module.exports = function(config) {
       'karma-browserify'
     ],
 
-    browsers: ['PhantomJS'],
+    browsers: ['Chrome'],
 
     customLaunchers: {
       'PhantomJS-debug': {
