@@ -21,6 +21,13 @@ module.exports = function(config) {
 
     browsers: ['PhantomJS'],
 
+    customLaunchers: {
+      'PhantomJS-debug': {
+        base: 'PhantomJS',
+        flags: ['--remote-debugger-port=9000']
+      }
+    },
+
     reporters: ['mocha'],
 
     frameworks: ['mocha', 'sinon-chai', 'browserify'],
