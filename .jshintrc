@@ -1,4 +1,8 @@
 {
+  "globals": {
+    "sinon": false
+  },
   "node": true,
-  "mocha": true
+  "mocha": true,
+  "expr": true
 }
