@@ -11,6 +11,8 @@ var projectName = require('./package.json').name;
 var standaloneName = require('./package.json').standaloneName;
 var sourceFile = ['./src/index.js'];
 
+var options = require('minimist')(process.argv.slice(2));
+
 
 // Browserify helper
 
@@ -61,11 +63,17 @@ gulp.task('test', function (done) {
 });
 
 gulp.task('test-debug', function (done) {
-  karma.start({
+  var config = {
     configFile: __dirname + '/karma.conf.js',
     singleRun: false,
     autoWatch: true
-  }, done);
+  };
+
+  if (typeof options.browsers === 'string' && options.browsers.length) {
+    config.browsers = options.browsers.split();
+  }
+
+  karma.start(config, done);
 });
 
 gulp.task('build', ['build-browserify', 'build-standalone']);
