@@ -42,13 +42,7 @@ describe('JasmineMigrate', function () {
           new JasmineMigrate(jasmine);
 
           jasmineWrapper(function() {
-            // Catch error thrown by `andThrow` :)
-            try { 
-              var spy = jasmineCore.spyOn(test, 'method').and[newMethod]();
-
-              test.method();
-
-            } catch (error) {}
+            jasmineCore.spyOn(test, 'method').and[newMethod]();
           });
 
           jasmine.Spy.prototype[oldMethod].should.have.been.called;
