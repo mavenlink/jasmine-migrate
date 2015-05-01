@@ -62,7 +62,15 @@ gulp.task('test', function (done) {
   }, done);
 });
 
-gulp.task('test-debug', function (done) {
+gulp.task('ci', function (done) {
+  karma.start({
+    configFile: __dirname + '/karma.conf.js',
+    singleRun: true,
+    browsers: ['Firefox']
+  }, done);
+});
+
+gulp.task('develop', function (done) {
   var config = {
     configFile: __dirname + '/karma.conf.js',
     singleRun: false,
