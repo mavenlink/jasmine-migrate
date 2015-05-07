@@ -7,6 +7,8 @@ var browserify = require('browserify');
 var rename = require('gulp-rename');
 var transform = require('vinyl-transform');
 var jscs = require('gulp-jscs');
+var jshint = require('gulp-jshint');
+var stylish = require('gulp-jscs-stylish');
 
 var projectName = require('./package.json').name;
 var standaloneName = require('./package.json').standaloneName;
@@ -74,22 +76,17 @@ gulp.task('test-ci', function (done) {
 gulp.task('lint', function (done) {
   var fix = options.fix;
 
-  var noop = function () {};
-  var jscsOptions = function () {
-    if (fix) {
-      return { fix: true, configPath: '.jscsrc' };
-    } else {
-      return undefined;
-    }
-  };
-
   var stream = gulp.src(source.concat(testSource), { base: '.' })
-    .pipe(jscs(jscsOptions()));
+    .pipe(jshint())
+    .pipe(jscs(function () {
+      if (fix) return { fix: true, configPath: '.jscsrc' };
+    }()))
+    .on('error', function () {})
+    .pipe(stylish.combineWithHintResults())
+    .pipe(jshint.reporter('jshint-stylish'));
 
   if (fix) {
-    stream
-      .on('error', noop)
-      .pipe(gulp.dest('.'));
+    stream.pipe(gulp.dest('.'));
   }
 });
 
