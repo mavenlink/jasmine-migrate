@@ -1,11 +1,22 @@
 'use strict';
 
 var _               = require('lodash');
-var jasmineCore     = require('jasmine-core');
 var JasmineMigrate  = require('../src/index.js');
 
-var jasmine = jasmineCore.jasmine;
+var jasmineCore;
+var jasmine;
 
+
+function requireJasmine() {
+  jasmineCore = require('jasmine-core');
+  jasmine = jasmineCore.jasmine;
+}
+
+function installPlugin() {
+  requireJasmine();
+
+  new JasmineMigrate(jasmine);
+}
 
 function jasmineWrapper(spec) {
   jasmineCore.describe('describe', function () {
@@ -17,6 +28,11 @@ function jasmineWrapper(spec) {
 
 
 describe('JasmineMigrate', function () {
+
+  afterEach(function () {
+    jasmineCore = null;
+    jasmine = null;
+  });
 
   describe('Jasmine 2 "Emulation"', function () {
 
@@ -40,6 +56,8 @@ describe('JasmineMigrate', function () {
       var itProxiesMethod = function (newMethod, oldMethod) {
         it('proxies `and.' + newMethod + '` to `' + oldMethod + '`', function () {
 
+          requireJasmine();
+
           sinon.spy(jasmine.Spy.prototype, oldMethod);
 
           new JasmineMigrate(jasmine);
@@ -58,7 +76,7 @@ describe('JasmineMigrate', function () {
         var spy;
 
         beforeEach(function () {
-          new JasmineMigrate(jasmine);
+          installPlugin();
         });
 
         it('preserves correct functionality of `andCallThrough`', function () {
@@ -99,11 +117,15 @@ describe('JasmineMigrate', function () {
         });
 
         it('preserves correct functionality of `andReturn`', function () {
+          var returnValue;
+
           jasmineWrapper(function () {
             jasmineCore.spyOn(test, 'method').and.returnValue('value');
 
-            test.method().should.equal('value');
+            returnValue = test.method();
           });
+
+          returnValue.should.equal('value');
         });
       });
 
@@ -116,6 +138,8 @@ describe('JasmineMigrate', function () {
 
       var itProxiesMethod = function (newMethod, oldMethod) {
         it('proxies `clock().' + newMethod + '` to `Clock.' + oldMethod + '`', function () {
+
+          requireJasmine();
 
           sinon.spy(jasmine.Clock, oldMethod);
 
