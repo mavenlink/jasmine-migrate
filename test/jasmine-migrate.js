@@ -24,14 +24,17 @@ describe('JasmineMigrate', function () {
       var oldSyntax = ['andCallThrough', 'andCallFake', 'andThrow', 'andReturn'];
       var newSyntax = ['callThrough', 'callFake', 'throwError', 'returnValue'];
       var syntaxMap = _.zipObject(oldSyntax, newSyntax);
+      var Test;
       var test;
 
       beforeEach(function () {
-        test = {
-          method: function () {
-            return 'original';
-          }
+        Test = function () {};
+
+        Test.prototype.method = function () {
+          return 'original';
         };
+
+        test = new Test();
       });
 
       var itProxiesMethod = function (newMethod, oldMethod) {
@@ -50,6 +53,60 @@ describe('JasmineMigrate', function () {
       };
 
       _.forIn(syntaxMap, itProxiesMethod);
+
+      describe('original functionality', function () {
+        var spy;
+
+        beforeEach(function () {
+          new JasmineMigrate(jasmine);
+        });
+
+        it('preserves correct functionality of `andCallThrough`', function () {
+          sinon.spy(test, 'method');
+
+          jasmineWrapper(function () {
+            jasmineCore.spyOn(test, 'method').and.callThrough();
+
+            test.method();
+          });
+
+          test.method.should.have.been.called;
+        });
+
+        it('preserves correct functionality of `andCallFake`', function () {
+          var fake = sinon.spy();
+
+          jasmineWrapper(function () {
+            jasmineCore.spyOn(test, 'method').and.callFake(fake);
+
+            test.method();
+          });
+
+          fake.should.have.been.called;
+        });
+
+        it('preserves correct functionality of `andThrow`', function () {
+          var thrower = sinon.spy(function () {
+            test.method();
+          });
+
+          jasmineWrapper(function () {
+            jasmineCore.spyOn(test, 'method').and.throwError('Error');
+            thrower();
+          });
+
+          thrower.should.have.thrown('Error');
+        });
+
+        it('preserves correct functionality of `andReturn`', function () {
+          jasmineWrapper(function () {
+            jasmineCore.spyOn(test, 'method').and.returnValue('value');
+
+            test.method().should.equal('value');
+          });
+        });
+      });
+
     });
 
   });
