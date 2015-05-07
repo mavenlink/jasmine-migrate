@@ -10,7 +10,7 @@ function JasmineMigrate(jasmine) {
   // Old usage                          New usage
   // ---------                          ---------
   // spy.andCallThrough();              spy.and.callThrough();
-  // spy.andCallFake(function () {});    spy.and.callFake(function () {});
+  // spy.andCallFake(function () {});   spy.and.callFake(function () {});
   // spy.andThrow('error');             spy.and.throwError('error');
   // spy.andReturn(1);                  spy.and.returnValue(1);
   // spy.mostRecentCall;                spy.calls.mostRecent();

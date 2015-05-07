@@ -18,8 +18,8 @@ var options = require('minimist')(process.argv.slice(2));
 
 // Browserify helper
 
-var browserified = function(standalone) {
-  return transform(function(filename) {
+var browserified = function (standalone) {
+  return transform(function (filename) {
     var bundler;
 
     if (standalone) {
@@ -34,11 +34,10 @@ var browserified = function(standalone) {
   });
 };
 
-
 // Tasks
 
-gulp.task('build-browserify', function() {
-  gulp.src(sourceFile)
+gulp.task('build-browserify', function () {
+  gulp.src(source)
     .pipe(browserified())
     .pipe(rename(projectName + '.js'))
     .pipe(gulp.dest('./dist/'))
@@ -47,8 +46,8 @@ gulp.task('build-browserify', function() {
     .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('build-standalone', function() {
-  gulp.src(sourceFile)
+gulp.task('build-standalone', function () {
+  gulp.src(source)
     .pipe(browserified(true))
     .pipe(rename(projectName + '-standalone.js'))
     .pipe(gulp.dest('./dist/'))
