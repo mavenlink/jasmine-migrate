@@ -8,6 +8,7 @@
     "browserify-shim": "^3.8.3",
     "chai": "^1.9.1",
     "gulp": "^3.8.7",
+    "gulp-jscs": "^1.6.0",
     "gulp-rename": "^1.2.0",
     "gulp-uglify": "^0.3.1",
     "jasmine-core": "https://github.com/jrolfs/jasmine/tarball/npm_1_3_x",

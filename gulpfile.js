@@ -6,10 +6,12 @@ var uglify = require('gulp-uglify');
 var browserify = require('browserify');
 var rename = require('gulp-rename');
 var transform = require('vinyl-transform');
+var jscs = require('gulp-jscs');
 
 var projectName = require('./package.json').name;
 var standaloneName = require('./package.json').standaloneName;
-var sourceFile = ['./src/index.js'];
+var source = ['./src/index.js'];
+var testSource = ['./test/jasmine-migrate.js'];
 
 var options = require('minimist')(process.argv.slice(2));
 
@@ -68,6 +70,35 @@ gulp.task('ci', function (done) {
     singleRun: true,
     browsers: ['Firefox']
   }, done);
+});
+
+gulp.task('jscs', function (done) {
+  var fix = options.fix;
+
+  var noop = function () {};
+  var jscsOptions = function () {
+    if (fix) {
+      return { fix: true, configPath: '.jscsrc' };
+    } else {
+      return undefined;
+    }
+  };
+
+  var sourceStream = gulp.src(source)
+    .pipe(jscs(jscsOptions()));
+
+  var testStream = gulp.src(testSource)
+    .pipe(jscs(jscsOptions()));
+
+  if (fix) {
+    sourceStream
+      .on('error', noop)
+      .pipe(gulp.dest('./src'));
+
+    testStream
+      .on('error', noop)
+      .pipe(gulp.dest('./test'));
+  }
 });
 
 gulp.task('develop', function (done) {
