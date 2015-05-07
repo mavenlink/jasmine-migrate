@@ -71,7 +71,7 @@ gulp.task('ci', function (done) {
   }, done);
 });
 
-gulp.task('jscs', function (done) {
+gulp.task('lint', function (done) {
   var fix = options.fix;
 
   var noop = function () {};
