@@ -8,8 +8,8 @@ var jasmine = jasmineCore.jasmine;
 
 
 function jasmineWrapper(spec) {
-  jasmineCore.describe('describe', function() {
-    jasmineCore.it('it', function() {
+  jasmineCore.describe('describe', function () {
+    jasmineCore.it('it', function () {
       spec.call(this);
     });
   }).execute();
@@ -18,9 +18,9 @@ function jasmineWrapper(spec) {
 
 describe('JasmineMigrate', function () {
 
-  describe('Jasmine 2 "Emulation"', function() {
+  describe('Jasmine 2 "Emulation"', function () {
 
-    describe('new spy syntax', function() {
+    describe('new spy syntax', function () {
       var oldSyntax = ['andCallThrough', 'andCallFake', 'andThrow', 'andReturn'];
       var newSyntax = ['callThrough', 'callFake', 'throwError', 'returnValue'];
       var syntaxMap = _.zipObject(oldSyntax, newSyntax);
@@ -35,13 +35,13 @@ describe('JasmineMigrate', function () {
       });
 
       var itProxiesMethod = function (newMethod, oldMethod) {
-        it('proxies `and.' + newMethod + '` to `' + oldMethod + '`', function() {
+        it('proxies `and.' + newMethod + '` to `' + oldMethod + '`', function () {
 
           sinon.spy(jasmine.Spy.prototype, oldMethod);
 
           new JasmineMigrate(jasmine);
 
-          jasmineWrapper(function() {
+          jasmineWrapper(function () {
             jasmineCore.spyOn(test, 'method').and[newMethod]();
           });
 
@@ -52,6 +52,6 @@ describe('JasmineMigrate', function () {
       _.forIn(syntaxMap, itProxiesMethod);
     });
 
-   }); 
+  }); 
 
 });
