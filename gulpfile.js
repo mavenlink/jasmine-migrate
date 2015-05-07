@@ -95,7 +95,9 @@ gulp.task('lint', function (done) {
     .pipe(jscs(function () {
       if (fix) return { fix: true, configPath: '.jscsrc' };
     }()))
-    .on('error', function () {})
+    .on('error', function (error) {
+      if (options.ci) process.exit(1);
+    })
     .pipe(stylish.combineWithHintResults())
     .pipe(jshint.reporter('jshint-stylish'));
 
@@ -104,6 +106,8 @@ gulp.task('lint', function (done) {
   }
 });
 
+gulp.task('ci-setup', function () { options.ci = true; });
+
 gulp.task('build', ['build-browserify', 'build-standalone']);
-gulp.task('ci', ['lint', 'test-ci']);
+gulp.task('ci', ['ci-setup', 'lint', 'test-ci']);
 gulp.task('default', ['test', 'build']);
