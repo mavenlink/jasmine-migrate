@@ -130,6 +130,27 @@ describe('JasmineMigrate', function () {
       };
 
       _.forIn(syntaxMap, itProxiesMethod);
+
+      describe('original functionality', function () {
+        beforeEach(function () {
+          installPlugin();
+        });
+
+        it('preserves correct functionality of `installMock`', function () {
+          jasmine.Clock.isInstalled().should.equal(false);
+
+          jasmine.clock().install();
+
+          jasmine.Clock.isInstalled().should.equal(true);
+        });
+
+        it('preserves correct functionality of `uninstallMock`', function () {
+          jasmine.clock().install();
+          jasmine.clock().uninstall();
+
+          jasmine.Clock.isInstalled().should.equal(false);
+        });
+      });
     });
 
   });
