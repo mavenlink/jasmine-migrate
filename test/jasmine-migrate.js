@@ -109,6 +109,29 @@ describe('JasmineMigrate', function () {
 
     });
 
+    describe('new clock syntax', function () {
+      var oldSyntax = ['tick', 'installMock', 'uninstallMock'];
+      var newSyntax = ['tick', 'install', 'uninstall'];
+      var syntaxMap = _.zipObject(oldSyntax, newSyntax);
+
+      var itProxiesMethod = function (newMethod, oldMethod) {
+        it('proxies `clock().' + newMethod + '` to `Clock.' + oldMethod + '`', function () {
+
+          sinon.spy(jasmine.Clock, oldMethod);
+
+          new JasmineMigrate(jasmine);
+
+          jasmineWrapper(function () {
+            jasmine.clock()[newMethod]();
+          });
+
+          jasmine.Clock[oldMethod].should.have.been.called;
+        });
+      };
+
+      _.forIn(syntaxMap, itProxiesMethod);
+    });
+
   });
 
 });
