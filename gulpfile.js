@@ -63,7 +63,7 @@ gulp.task('test', function (done) {
   }, done);
 });
 
-gulp.task('ci', function (done) {
+gulp.task('test-ci', function (done) {
   karma.start({
     configFile: __dirname + '/karma.conf.js',
     singleRun: true,
@@ -108,4 +108,5 @@ gulp.task('develop', function (done) {
 });
 
 gulp.task('build', ['build-browserify', 'build-standalone']);
+gulp.task('ci', ['lint', 'test-ci']);
 gulp.task('default', ['test', 'build']);
