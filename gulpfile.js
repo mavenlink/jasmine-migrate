@@ -96,7 +96,10 @@ gulp.task('lint', function (done) {
       if (fix) return { fix: true, configPath: '.jscsrc' };
     }()))
     .on('error', function (error) {
-      if (options.ci) process.exit(1);
+      if (options.ci) {
+        console.error('Errors occurred during linting');
+        process.exit(1);
+      }
     })
     .pipe(stylish.combineWithHintResults())
     .pipe(jshint.reporter('jshint-stylish'));
