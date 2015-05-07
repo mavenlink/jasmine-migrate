@@ -44,6 +44,20 @@ function JasmineMigrate(jasmine) {
 
     return spy;
   };
+
+  // Clock
+
+  var oldTick = jasmine.Clock.tick;
+  var oldInstallMock = jasmine.Clock.installMock;
+  var oldUninstallMock = jasmine.Clock.uninstallMock;
+
+  jasmine.clock = function () {
+    return {
+      tick: oldTick.bind(jasmine.Clock),
+      install: oldInstallMock.bind(jasmine.Clock),
+      uninstall: oldUninstallMock.bind(jasmine.Clock)
+    };
+  };
 }
 
 module.exports = JasmineMigrate;
