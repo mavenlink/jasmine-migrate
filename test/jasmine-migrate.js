@@ -47,11 +47,11 @@ describe('JasmineMigrate', function () {
 
           jasmine.Spy.prototype[oldMethod].should.have.been.called;
         });
-      }; 
+      };
 
       _.forIn(syntaxMap, itProxiesMethod);
     });
 
-  }); 
+  });
 
 });
