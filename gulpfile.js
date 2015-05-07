@@ -83,20 +83,13 @@ gulp.task('lint', function (done) {
     }
   };
 
-  var sourceStream = gulp.src(source)
-    .pipe(jscs(jscsOptions()));
-
-  var testStream = gulp.src(testSource)
+  var stream = gulp.src(source.concat(testSource), { base: '.' })
     .pipe(jscs(jscsOptions()));
 
   if (fix) {
-    sourceStream
+    stream
       .on('error', noop)
-      .pipe(gulp.dest('./src'));
-
-    testStream
-      .on('error', noop)
-      .pipe(gulp.dest('./test'));
+      .pipe(gulp.dest('.'));
   }
 });
 
