@@ -174,6 +174,22 @@ describe('JasmineMigrate', function () {
 
           jasmine.Clock.isInstalled().should.equal(false);
         });
+
+        it('preserves correct functionality of `tick`', function () {
+          var ticked = false;
+
+          var interval = function () {
+            setInterval(function () {
+              ticked = true;
+            }, 1);
+          };
+
+          jasmine.clock().install();
+          interval();
+          jasmine.clock().tick(2);
+
+          ticked.should.equal(true);
+        });
       });
     });
 
