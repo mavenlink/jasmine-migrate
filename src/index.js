@@ -1,9 +1,33 @@
 'use strict';
 
-function JasmineMigrate(jasmine) {
+function JasmineMigrate(jasmine, options) {
+  this.jasmine = jasmine;
+  this.options = options;
 
-  //
-  // Jasmine 2 "Emulation"
+  this.originals = { spy: {}, clock: {} };
+
+  this.initEmulation();
+}
+
+JasmineMigrate.prototype.SPY_MAP = {
+  andCallThrough: 'callThrough',
+  andCallFake: 'callFake',
+  andThrow: 'throwError',
+  andReturn: 'returnValue'
+};
+
+JasmineMigrate.prototype.CLOCK_MAP = {
+  tick: 'tick',
+  installMock: 'install',
+  uninstallMock: 'uninstall'
+};
+
+JasmineMigrate.prototype.initEmulation = function () {
+  var jasmine = this.jasmine;
+  var originals = this.originals;
+
+  var SPY_MAP = this.SPY_MAP;
+  var CLOCK_MAP = this.CLOCK_MAP;
 
   // Spies
 
@@ -19,22 +43,20 @@ function JasmineMigrate(jasmine) {
   // spy.calls[0]                       spy.calls.first()
   // spy.calls[x].args                  spy.calls.argsFor(x)
 
-  var oldCreateSpy = jasmine.createSpy;
+  for (var spyMethod in SPY_MAP) {
+    originals.spy[spyMethod] = jasmine.Spy.prototype[spyMethod];
+  }
 
-  var oldAndCallThrough = jasmine.Spy.prototype.andCallThrough;
-  var oldAndCallFake = jasmine.Spy.prototype.andCallFake;
-  var oldAndThrow = jasmine.Spy.prototype.andThrow;
-  var oldAndReturn = jasmine.Spy.prototype.andReturn;
+  var oldCreateSpy = jasmine.createSpy;
 
   jasmine.createSpy = function (name) {
     var spy = oldCreateSpy.call(this, name);
 
-    spy.and = {
-      callThrough: oldAndCallThrough.bind(spy),
-      callFake: oldAndCallFake.bind(spy),
-      throwError: oldAndThrow.bind(spy),
-      returnValue: oldAndReturn.bind(spy)
-    };
+    spy.and = {};
+
+    for (var spyMethod in SPY_MAP) {
+      spy.and[SPY_MAP[spyMethod]] = originals.spy[spyMethod].bind(spy);
+    }
 
     spy.calls.mostRecent = function () { return spy.mostRecentCall; };
     spy.calls.count = function () { return spy.callCount; };
@@ -54,17 +76,19 @@ function JasmineMigrate(jasmine) {
   // jasmine.Clock.installMock()      jasmine.clock().install()
   // jasmine.Clock.uninstallMock()    jasmine.clock().uninstall()
 
-  var oldTick = jasmine.Clock.tick;
-  var oldInstallMock = jasmine.Clock.installMock;
-  var oldUninstallMock = jasmine.Clock.uninstallMock;
+  for (var clockMethod in CLOCK_MAP) {
+    originals.clock[clockMethod] = jasmine.Clock[clockMethod];
+  }
 
   jasmine.clock = function () {
-    return {
-      tick: oldTick.bind(jasmine.Clock),
-      install: oldInstallMock.bind(jasmine.Clock),
-      uninstall: oldUninstallMock.bind(jasmine.Clock)
-    };
+    var clock = {};
+
+    for (var clockMethod in CLOCK_MAP) {
+      clock[CLOCK_MAP[clockMethod]] = originals.clock[clockMethod].bind(jasmine.Clock);
+    }
+
+    return clock;
   };
-}
+};
 
 module.exports = JasmineMigrate;
