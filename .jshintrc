@@ -2,7 +2,7 @@
   "globals": {
     "sinon": false,
     "window": false,
-    "context", false
+    "context": false
   },
   "node": true,
   "mocha": true,
