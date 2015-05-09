@@ -1,13 +1,36 @@
 'use strict';
 
+//
+// Init
+
 function JasmineMigrate(jasmine, options) {
   this.jasmine = jasmine;
-  this.options = options;
+  this.options = options || {};
 
   this.originals = { spy: {}, clock: {} };
 
   this.initEmulation();
+
+  if (this.options.log) {
+    if (typeof(options.logLevel) === 'undefined') {
+      options.logLevel = JasmineMigrate.logLevels.LOG;
+    }
+
+    this.initLogging();
+  }
 }
+
+
+//
+// Properties
+
+JasmineMigrate.logLevels = {
+  DEBUG: 'debug',
+  LOG: 'log',
+  INFO: 'info',
+  WARN: 'warn',
+  ERROR: 'error'
+};
 
 JasmineMigrate.prototype.SPY_MAP = {
   andCallThrough: 'callThrough',
@@ -20,6 +43,20 @@ JasmineMigrate.prototype.CLOCK_MAP = {
   tick: 'tick',
   installMock: 'install',
   uninstallMock: 'uninstall'
+};
+
+
+//
+// Methods
+
+JasmineMigrate.prototype.log = function () {
+  var output = console[this.options.logLevel];
+
+  if (typeof(output) !== 'function') {
+    output = console.log;
+  }
+
+  output.apply(window, arguments);
 };
 
 JasmineMigrate.prototype.initEmulation = function () {

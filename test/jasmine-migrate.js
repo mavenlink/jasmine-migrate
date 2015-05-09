@@ -6,16 +6,18 @@ var JasmineMigrate  = require('../src/index.js');
 var jasmineCore;
 var jasmine;
 
+var plugin;
+
 
 function requireJasmine() {
   jasmineCore = require('jasmine-core');
   jasmine = jasmineCore.jasmine;
 }
 
-function installPlugin() {
+function installPlugin(options) {
   requireJasmine();
 
-  new JasmineMigrate(jasmine);
+  plugin = new JasmineMigrate(jasmine, options);
 }
 
 function jasmineWrapper(spec) {
@@ -193,6 +195,28 @@ describe('JasmineMigrate', function () {
       });
     });
 
+  });
+
+  describe('logging', function () {
+    describe('log levels', function () {
+
+      _.forIn(JasmineMigrate.logLevels, function (level, constant) {
+        context('when log level is set to "' + constant + '"', function () {
+          beforeEach(function () {
+            installPlugin({ log: true, logLevel: level });
+          });
+
+          it('logs with correct method', function () {
+            sinon.stub(console, level);
+
+            plugin.log('the thing');
+
+            console[level].should.have.been.calledWith('the thing');
+          });
+        });
+      });
+
+    });
   });
 
 });
