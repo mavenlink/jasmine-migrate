@@ -128,4 +128,9 @@ JasmineMigrate.prototype.initEmulation = function () {
   };
 };
 
+JasmineMigrate.prototype.initLogging = function () {
+
+};
+
+
 module.exports = JasmineMigrate;
