@@ -13,7 +13,7 @@ function JasmineMigrate(jasmine, options) {
 
   if (this.options.log) {
     if (typeof(options.logLevel) === 'undefined') {
-      options.logLevel = JasmineMigrate.logLevels.LOG;
+      options.logLevel = JasmineMigrate.logLevels.WARN;
     }
 
     this.initLogging();
