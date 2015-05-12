@@ -2,7 +2,8 @@
   "globals": {
     "sinon": false,
     "window": false,
-    "context": false
+    "context": false,
+    "expect": false
   },
   "node": true,
   "mocha": true,
