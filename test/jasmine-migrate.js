@@ -36,7 +36,7 @@ describe('JasmineMigrate', function () {
     jasmine = null;
   });
 
-  describe('Jasmine 2 "Emulation"', function () {
+  describe('Jasmine 2 emulation', function () {
 
     describe('new spy syntax', function () {
       var oldSyntax = ['andCallThrough', 'andCallFake', 'andThrow', 'andReturn'];
@@ -201,14 +201,18 @@ describe('JasmineMigrate', function () {
     describe('log levels', function () {
 
       _.forIn(JasmineMigrate.logLevels, function (level, constant) {
-        context('when log level is set to "' + constant + '"', function () {
-          beforeEach(function () {
+        context('when log level is set to `' + constant + '`', function () {
+          before(function () {
+            sinon.stub(console, level);
+
             installPlugin({ log: true, logLevel: level });
           });
 
-          it('logs with correct method', function () {
-            sinon.stub(console, level);
+          after(function () {
+            console[level].restore();
+          });
 
+          it('logs with correct method', function () {
             plugin.log('the thing');
 
             console[level].should.have.been.calledWith('the thing');
@@ -216,6 +220,46 @@ describe('JasmineMigrate', function () {
         });
       });
 
+    });
+
+    context('log level is not provided', function () {
+      before(function () {
+        sinon.stub(console, 'warn');
+
+        installPlugin({ log: true });
+      });
+
+      after(function () {
+        console.warn.restore();
+      });
+
+      it('defaults to `WARN`', function () {
+
+        plugin.log('the warning');
+
+        console.warn.should.have.been.calledWith('the warning');
+      });
+    });
+
+    context('provided log level does not exist', function () {
+      before(function () {
+        expect(console.warnify).to.be.undefined;
+
+        sinon.stub(console, 'log');
+
+        installPlugin({ log: true, logLevel: 'warnify' });
+      });
+
+      after(function () {
+        console.log.restore();
+      });
+
+      it('defaults to `console.log`', function () {
+
+        plugin.log('the log');
+
+        console.log.should.have.been.calledWith('the log');
+      });
     });
   });
 
