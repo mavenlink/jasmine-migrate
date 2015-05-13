@@ -215,7 +215,7 @@ describe('JasmineMigrate', function () {
           it('logs with correct method', function () {
             plugin.log('the thing');
 
-            console[level].should.have.been.calledWith('the thing');
+            console[level].should.have.been.calledWith('JasmineMigrate:', 'the thing');
           });
         });
       });
@@ -237,7 +237,7 @@ describe('JasmineMigrate', function () {
 
         plugin.log('the warning');
 
-        console.warn.should.have.been.calledWith('the warning');
+        console.warn.should.have.been.calledWith('JasmineMigrate:', 'the warning');
       });
     });
 
@@ -258,7 +258,7 @@ describe('JasmineMigrate', function () {
 
         plugin.log('the log');
 
-        console.log.should.have.been.calledWith('the log');
+        console.log.should.have.been.calledWith('JasmineMigrate:', 'the log');
       });
     });
   });

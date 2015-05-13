@@ -56,7 +56,9 @@ JasmineMigrate.prototype.log = function () {
     output = console.log;
   }
 
-  output.apply(window, arguments);
+  var args = ['JasmineMigrate:'].concat([].slice.call(arguments));
+
+  output.apply(window, args);
 };
 
 JasmineMigrate.prototype.initEmulation = function () {
