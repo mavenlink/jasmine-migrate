@@ -131,7 +131,22 @@ JasmineMigrate.prototype.initEmulation = function () {
 };
 
 JasmineMigrate.prototype.initLogging = function () {
+  var jasmine = this.jasmine;
+  var log = this.log;
+  var spy = this.originals.spy;
 
+  var wrapOld = function (oldFunction, oldUse, newUse) {
+    return function () {
+      log(oldUse + ' is deprecated. Please use ' + newUse + '.');
+      oldFunction.apply(this, arguments);
+      return this;
+    };
+  };
+
+  jasmine.Spy.prototype.andCallThrough = wrapOld(spy.andCallThrough, 'spy.andCallThrough', 'spy.and.callThrough');
+  jasmine.Spy.prototype.andCallFake = wrapOld(spy.andCallFake, 'spy.andCallFake', 'spy.and.callFake');
+  jasmine.Spy.prototype.andThrow = wrapOld(spy.andThrow, 'spy.andThrow', 'spy.and.throwError');
+  jasmine.Spy.prototype.andReturn = wrapOld(spy.andReturn, 'spy.andReturn', 'spy.and.returnValue');
 };
 
 
