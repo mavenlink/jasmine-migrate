@@ -12,7 +12,7 @@ function JasmineMigrate(jasmine, options) {
   this.initEmulation();
 
   if (this.options.log) {
-    if (typeof(options.logLevel) === 'undefined') {
+    if (typeof options.logLevel === 'undefined') {
       options.logLevel = JasmineMigrate.logLevels.WARN;
     }
 
@@ -52,7 +52,7 @@ JasmineMigrate.prototype.CLOCK_MAP = {
 JasmineMigrate.prototype.log = function () {
   var output = console[this.options.logLevel];
 
-  if (typeof(output) !== 'function') {
+  if (typeof output !== 'function') {
     output = console.log;
   }
 
