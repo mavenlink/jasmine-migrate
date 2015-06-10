@@ -262,6 +262,24 @@ describe('JasmineMigrate', function () {
         console.log.should.have.been.calledWith('JasmineMigrate:', 'the log');
       });
     });
+
+    describe('spy syntax deprecation warnings', function () {
+      beforeEach(function () {
+        sinon.stub(console, 'log');
+      });
+
+      context('when logging is enabled', function () {
+
+      });
+
+      context('when logging is not enabled', function () {
+
+      });
+
+      beforeEach(function () {
+        console.log.restore();
+      });
+    });
   });
 
 });
