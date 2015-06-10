@@ -8,6 +8,13 @@ var jasmine;
 
 var plugin;
 
+var oldSpySyntax = ['andCallThrough', 'andCallFake', 'andThrow', 'andReturn'];
+var newSpySyntax = ['callThrough', 'callFake', 'throwError', 'returnValue'];
+var spySyntaxMap = _.zipObject(oldSpySyntax, newSpySyntax);
+
+var oldClockSyntax = ['tick', 'installMock', 'uninstallMock'];
+var newClockSyntax = ['tick', 'install', 'uninstall'];
+var clockSyntaxMap = _.zipObject(oldClockSyntax, newClockSyntax);
 
 function requireJasmine() {
   jasmineCore = require('jasmine-core');
@@ -39,9 +46,6 @@ describe('JasmineMigrate', function () {
   describe('Jasmine 2 emulation', function () {
 
     describe('new spy syntax', function () {
-      var oldSyntax = ['andCallThrough', 'andCallFake', 'andThrow', 'andReturn'];
-      var newSyntax = ['callThrough', 'callFake', 'throwError', 'returnValue'];
-      var syntaxMap = _.zipObject(oldSyntax, newSyntax);
       var Test;
       var test;
 
@@ -72,7 +76,7 @@ describe('JasmineMigrate', function () {
         });
       };
 
-      _.forIn(syntaxMap, itProxiesMethod);
+      _.forIn(spySyntaxMap, itProxiesMethod);
 
       describe('original functionality', function () {
         var spy;
@@ -134,9 +138,6 @@ describe('JasmineMigrate', function () {
     });
 
     describe('new clock syntax', function () {
-      var oldSyntax = ['tick', 'installMock', 'uninstallMock'];
-      var newSyntax = ['tick', 'install', 'uninstall'];
-      var syntaxMap = _.zipObject(oldSyntax, newSyntax);
 
       var itProxiesMethod = function (newMethod, oldMethod) {
         it('proxies `clock().' + newMethod + '` to `Clock.' + oldMethod + '`', function () {
@@ -155,7 +156,7 @@ describe('JasmineMigrate', function () {
         });
       };
 
-      _.forIn(syntaxMap, itProxiesMethod);
+      _.forIn(clockSyntaxMap, itProxiesMethod);
 
       describe('original functionality', function () {
         beforeEach(function () {
